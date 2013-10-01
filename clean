@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+listfic=( *.png(N.) )
+((${#listfic} > 0)) && \rm -f $listfic
+[[ -e /tmp/mp ]] && \rm -rf /tmp/mp
