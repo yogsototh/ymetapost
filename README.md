@@ -35,13 +35,9 @@ drawstate((-1.5u-.2u,-.2u));
 drawstate((-1.5u+.2u,-.2u));
 ~~~
 
-Render as
+Generate the following image:
 
-<figure>
-<img src="./abstraction.png" alt="The category for the number 3">
-<figcaption>
+<img src="./abstraction.png" alt="The category for the number 3"><br/>
 The category corresponding to number 3.
-</figcaption>
-</figure>
 
 
