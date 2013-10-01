@@ -1,9 +1,9 @@
 # Generate graph in PNG using metapost
 
-First you need to install `metapost` and `imagemagick`.
+First you need to install `LaTeX`, `metapost` and `imagemagick`.
 
-Then this code provide a nice code to draw graphs and automata.
-Furthermore the script `gen` generate only PNG optimized for the web.
+Then this repo provide a metapost lib to draw automata using LaTeX labels.
+Then the script use the solarized color theme and also generate PNG optimized for the web.
 
 ## Example
 
