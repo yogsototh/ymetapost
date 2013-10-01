@@ -8,36 +8,32 @@ Furthermore the script `gen` generate only PNG optimized for the web.
 ## Example
 
 ~~~
-z0=(1.3u,0);
-z1=z0 shifted (u,0);
-z2=z1 shifted (u,0);
+z0=origin;
+z1=(gu,0);
+z2=(2gu,0);
+z3=(3gu,0);
 
-nodesize:=4bp;
-nodespace:=6bp;
+drawState(z0,"A");
+drawState(z1,"B");
+drawState(z2,"C");
+drawState(z3,"D");
 
-drawstate(z0);
-drawstate(z1);
-drawstate(z2);
+drawEdge(z1,z2,"g");
 
-drawarrow edge(z0,z1);
-drawarrow edge(z1,z2);
-drawarrow edgeAngle(z0,z2,-35);
+drawoptions(withcolor blue);
+drawEdgeAngle(z0,z2,"g\circ f",35);
+drawEdge(z2,z3,"h");
 
-nodesize:=6bp;
-ahlength:=.3nodesize;
-drawarrow edge(z0,z0);
-drawarrow edge(z1,z1);
-drawarrow edge(z2,z2);
+drawoptions(withcolor green);
+drawEdge(z0,z1,"f");
+drawEdgeAngle(z1,z3,"h\circ g",-35);
 
-label(btex $ = 3 = $ etex,origin);
-drawstate((-1.5u,.2u));
-drawstate((-1.5u-.2u,-.2u));
-drawstate((-1.5u+.2u,-.2u));
+drawoptions(withcolor yellow);
+drawEdgeAngle(z0,z3,"(h\circ g)\circ f = h\circ (g\circ f)",50);
 ~~~
 
 Generate the following image:
 
-<img src="./abstraction.png" alt="The category for the number 3"><br/>
-The category corresponding to number 3.
+<img src="./associativecomposition.png" alt="Composition is associative"><br/>
 
 
