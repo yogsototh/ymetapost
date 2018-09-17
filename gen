@@ -9,34 +9,28 @@ else
     scriptdir="$PWD/${0:h}"
 fi
 
-# the tmp directory where compilation occurs with a lot of temporary files
-tmpdir=/tmp/mp
-[[ ! -d $tmpdir ]] && mkdir $tmpdir
-
 # the list of mp files without argument all file in the current tree
 typeset -a fics
 if (($#<1)); then
-    fics=( $scriptdir/*.mp(N) )
+    err "Usage: ${0:t} FILES"
 else
-    for f in $@; fics=( $fics $scriptdir/$f )
+    fics=( $* );
 fi
 
 (( ${#fics} == 0 )) && err "No .mp files into $scriptdir"
 
-(( ${#fics} == 1 )) && [[ ${fics[1]} = "$scriptdir/graph.mp" ]] && \
-        err "Only graph.mp files indo $scriptdir"
+# the tmp directory where compilation occurs with a lot of temporary files
+tmpdir=/tmp/mp
+[[ ! -d $tmpdir ]] && mkdir -p $tmpdir
 
-\cp -f $fics $tmpdir
-cd $tmpdir
-for fpfic in $fics; do
-    fic=${fpfic:t}
-    tmp=${fic:r}-tmp.mp
-    eps=${fic:r}-tmp.1
+for fic in $fics; do
+    ficname=${fic:t}
+    tmp=$tmpdir/${ficname:r}-tmp.mp
+    eps=$tmpdir/${ficname:r}-tmp.1
     png=${fic:r}.png
-    old=${fic:r}.old
-    [[ $fic = "graph.mp" ]] && continue
+    old=$tmpdir/${ficname:r}.old
     {
-        echo -n >&2 "MPOST [$fic]"
+        echo -n >&2 "$png"
         cat $scriptdir/graph.mp
         echo 'beginfig(1)'
         echo '  drawoptions (withcolor base01);'
@@ -54,23 +48,20 @@ for fpfic in $fics; do
       | sed 's/red/s_red/g' \
       | sed 's/blue/s_blue/g' \
       | sed 's/green/s_green/g' > $tmp
-    [[ -e $old ]] && diff $tmp $old >/dev/null && { echo " identical"; continue }
+    [[ -e $old ]] && diff $tmp $old >/dev/null && { echo " unchanged (clean $tmpdir if you want to force rebuild)"; continue }
 
 	dpi=$(grep '% DPI' $tmp | awk '{print $3}')
 	[[ $dpi = "" ]] && dpi=600
-
-	print
-	print "[DPI]: $dpi"
 
     # addshadow="'(' +clone -background black -shadow 90x4+0+1 ')' +swap -background none -layers merge +repage"
     addshadow=""
     reducesize=" -colors 254 -quality 75"
     cmd="convert -colorspace rgb -density $((4*dpi)) $eps -resize 25% $addshadow $reducesize $png"
 
-    print -- "[$PWD]: mpost $tmp && convert -density $dpi $tmp.1 $png"
-    mpost --tex=latex $tmp && \
+    cd $tmpdir && \
+    mpost --tex=latex ${tmp:t} >/dev/null && \
+        cd $OLDPWD && \
         eval $cmd && \
-        \cp -f $png $scriptdir && \
         \cp -f $tmp $old && \
-        echo "updated"
+        echo "updated" && \
 done
